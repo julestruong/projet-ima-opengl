@@ -1,0 +1,29 @@
+﻿La génération a démarré 30/11/2013 12:40:21.
+     1>Projet "c:\Users\julestruong93\documents\visual studio 2010\Projects\testOpenGLavecGlut\testOpenGLavecGlut\testOpenGLavecGlut.vcxproj" sur le nœud 2 (build cible(s)).
+     1>InitializeBuildStatus:
+         Mise à jour de l'horodatage "Debug\testOpenGLavecGlut.unsuccessfulbuild".
+       ClCompile:
+         Toutes les sorties sont à jour.
+         Toutes les sorties sont à jour.
+       ManifestResourceCompile:
+         Toutes les sorties sont à jour.
+       Link:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"c:\users\julestruong93\documents\visual studio 2010\Projects\testOpenGLavecGlut\Debug\testOpenGLavecGlut.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\testOpenGLavecGlut.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"c:\users\julestruong93\documents\visual studio 2010\Projects\testOpenGLavecGlut\Debug\testOpenGLavecGlut.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"c:\users\julestruong93\documents\visual studio 2010\Projects\testOpenGLavecGlut\Debug\testOpenGLavecGlut.lib" /MACHINE:X86 Debug\testOpenGLavecGlut.exe.embed.manifest.res
+         Debug\stdafx.obj
+         Debug\testOpenGLavecGlut.obj
+       Manifest:
+         c:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Debug\testOpenGLavecGlut.exe.embed.manifest" /manifest Debug\testOpenGLavecGlut.exe.intermediate.manifest
+         c:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo"Debug\testOpenGLavecGlut.exe.embed.manifest.res" Debug\testOpenGLavecGlut_manifest.rc 
+       LinkEmbedManifest:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"c:\users\julestruong93\documents\visual studio 2010\Projects\testOpenGLavecGlut\Debug\testOpenGLavecGlut.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\testOpenGLavecGlut.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"c:\users\julestruong93\documents\visual studio 2010\Projects\testOpenGLavecGlut\Debug\testOpenGLavecGlut.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"c:\users\julestruong93\documents\visual studio 2010\Projects\testOpenGLavecGlut\Debug\testOpenGLavecGlut.lib" /MACHINE:X86 Debug\testOpenGLavecGlut.exe.embed.manifest.res
+         Debug\stdafx.obj
+         Debug\testOpenGLavecGlut.obj
+         testOpenGLavecGlut.vcxproj -> c:\users\julestruong93\documents\visual studio 2010\Projects\testOpenGLavecGlut\Debug\testOpenGLavecGlut.exe
+       FinalizeBuildStatus:
+         Suppression du fichier "Debug\testOpenGLavecGlut.unsuccessfulbuild".
+         Mise à jour de l'horodatage "Debug\testOpenGLavecGlut.lastbuildstate".
+     1>Génération du projet "c:\Users\julestruong93\documents\visual studio 2010\Projects\testOpenGLavecGlut\testOpenGLavecGlut\testOpenGLavecGlut.vcxproj" terminée (build cible(s)).
+
+La génération a réussi.
+
+Temps écoulé 00:00:00.67
