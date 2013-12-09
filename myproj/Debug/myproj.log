@@ -1,0 +1,37 @@
+﻿La génération a démarré 09/12/2013 19:27:32.
+     1>Projet "F:\Cours\M3D\TP1\myproj\myproj.vcxproj" sur le nœud 2 (build cible(s)).
+     1>InitializeBuildStatus:
+         Création de "Debug\myproj.unsuccessfulbuild", car "AlwaysCreate" a été spécifié.
+       ClCompile:
+         Toutes les sorties sont à jour.
+         f:\Programmes\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Debug\myproj.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
+         main.cpp
+     1>f:\cours\m3d\tp1\myproj\object3d.h(62): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 f:\programmes\microsoft visual studio 10.0\vc\include\stdio.h(234) : voir la déclaration de 'fopen'
+     1>f:\cours\m3d\tp1\myproj\object3d.h(71): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 f:\programmes\microsoft visual studio 10.0\vc\include\stdio.h(325) : voir la déclaration de 'sscanf'
+     1>f:\cours\m3d\tp1\myproj\object3d.h(81): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 f:\programmes\microsoft visual studio 10.0\vc\include\stdio.h(325) : voir la déclaration de 'sscanf'
+     1>f:\cours\m3d\tp1\myproj\object3d.h(87): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 f:\programmes\microsoft visual studio 10.0\vc\include\stdio.h(325) : voir la déclaration de 'sscanf'
+       Link:
+         f:\Programmes\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"F:\Cours\M3D\TP1\Debug\myproj.exe" /INCREMENTAL:NO /NOLOGO glut32.lib glu32.lib opengl32.lib glew32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\myproj.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"F:\Cours\M3D\TP1\Debug\myproj.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"F:\Cours\M3D\TP1\Debug\myproj.lib" /MACHINE:X86 Debug\light.obj
+         Debug\main.obj
+         Debug\myproj.obj
+         Debug\point3d.obj
+         Debug\shaders.obj
+         Debug\stdafx.obj
+         Debug\vector3d.obj
+     1>light.obj : warning LNK4075: ' /EDITANDCONTINUE' ignoré à cause de la spécification '/INCREMENTAL:NO'
+     1>LINK : warning LNK4067: point d'entrée ambigu ; 'mainCRTStartup' sélectionné
+         myproj.vcxproj -> F:\Cours\M3D\TP1\Debug\myproj.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"F:\Cours\M3D\TP1\Debug\myproj.exe;#1" /manifest Debug\myproj.exe.intermediate.manifest
+       FinalizeBuildStatus:
+         Suppression du fichier "Debug\myproj.unsuccessfulbuild".
+         Mise à jour de l'horodatage "Debug\myproj.lastbuildstate".
+     1>Génération du projet "F:\Cours\M3D\TP1\myproj\myproj.vcxproj" terminée (build cible(s)).
+
+La génération a réussi.
+
+Temps écoulé 00:00:00.76
