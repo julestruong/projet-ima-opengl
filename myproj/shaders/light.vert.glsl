@@ -7,4 +7,6 @@ void main() {
 
 	myvertex = gl_Vertex;
 	mynormal = gl_Normal;
+
+	gl_TexCoord[0] = gl_MultiTexCoord0;
 }

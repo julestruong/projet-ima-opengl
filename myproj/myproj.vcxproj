@@ -87,6 +87,7 @@
   <ItemGroup>
     <ClInclude Include="geometry3.h" />
     <ClInclude Include="light.h" />
+    <ClInclude Include="myTexture.h" />
     <ClInclude Include="object3d.h" />
     <ClInclude Include="point3d.h" />
     <ClInclude Include="shaders.h" />
@@ -99,6 +100,7 @@
     <ClCompile Include="light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="myproj.cpp" />
+    <ClCompile Include="myTexture.cpp" />
     <ClCompile Include="point3d.cpp" />
     <ClCompile Include="shaders.cpp" />
     <ClCompile Include="stdafx.cpp">

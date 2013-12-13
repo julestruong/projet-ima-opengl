@@ -8,11 +8,15 @@ uniform int mylight_type;
 
 uniform bool silhouette;
 
+uniform sampler2D tex ;
+
 in vec4 myvertex;
 in vec3 mynormal;
 
 void main (void) 
 {        
+	vec4 color = texture2D(tex, gl_TexCoord[0].st);
+	
 	vec3 eyepos = vec3(0,0,0) ; 
 
 	vec4 _mypos = gl_ModelViewMatrix * myvertex ; 
@@ -55,11 +59,10 @@ void main (void)
 
 		vec3 reflectdir = normalize( reflect(-lightdir, normal) );
 
-		gl_FragColor = vec4(1,0,0,0)*mylight_color*max(dot(lightdir, normal),0) 
-					   + vec4(0.5,0.5,0.5,0)*mylight_color*pow(max(dot(reflectdir, eyedir),0), 20);
+		gl_FragColor = color*mylight_color*max(dot(lightdir, normal),0) 
+					   + color*mylight_color*pow(max(dot(reflectdir, eyedir),0), 20);
 	}
 
-	if(silhouette) gl_FragColor = vec4(0,0,0.1/(abs(dot(eyedir, normal))),1 );
+	if(silhouette) gl_FragColor = vec4(0,0,0.05/(abs(dot(eyedir, normal))),1 );
 	
-
 }

@@ -4,6 +4,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "myTexture.h"
+
+#define PI 3.14159265358979323846
+
 class myObject3D
 {
 public:
@@ -12,10 +16,32 @@ public:
 	GLfloat *vertices;
 	GLuint *indices;
 	GLfloat *normals;
+	GLfloat *textures;
+
+	myTexture *mytex;
 
 	int n, m;
   
 	myObject3D() {
+	}
+
+	void computeCylinderTexture()
+	{
+
+		//textures.resize(2*n);
+		textures = new GLfloat[2*n];
+		GLfloat x, y, z;
+		for (int i=0;i<n;i++)
+		{
+			x = vertices[3*i]; y = vertices[3*i+1]; z = vertices[3*i+2];
+	
+			textures[2*i] = z;
+			if ( y>=0.0f )     textures[2*i+1] = atan2(  y,  x ) / (PI) ;
+			else if ( y<0.0f )  textures[2*i+1] = (- atan2(  y,  x )) / (PI) ;
+			//this has problems at the seam, when 1->0 and so interpoltion results in the whole image squeezed between the two border vertices.
+			//if ( y>=0.0f )     textures[2*i+1] = atan2(  y,  x ) / (2*PI) ;
+			//else if ( y<0.0f )  textures[2*i+1] = (2*PI + atan2(  y,  x )) / (2*PI) ;
+		}
 	}
 
 	void normalize()
@@ -160,6 +186,9 @@ public:
 
 		glBindBuffer(GL_ARRAY_BUFFER, buffers[3]) ; 
 		glBufferData(GL_ARRAY_BUFFER, n*3*4, normals, GL_STATIC_DRAW);
+
+		glBindBuffer(GL_ARRAY_BUFFER, buffers[1]);
+		glBufferData(GL_ARRAY_BUFFER, n*2*4, textures, GL_STATIC_DRAW);
 	}
 
 	void displayObject()
@@ -171,6 +200,14 @@ public:
 		glBindBuffer(GL_ARRAY_BUFFER, buffers[3]);
 		glNormalPointer(GL_FLOAT, 0, 0) ; 
 		glEnableClientState(GL_NORMAL_ARRAY) ;
+
+
+		glBindBuffer(GL_ARRAY_BUFFER, buffers[1]);
+		glTexCoordPointer(2,GL_FLOAT,0,0) ;
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY) ;
+
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, mytex->texName) ;
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[2]);
 

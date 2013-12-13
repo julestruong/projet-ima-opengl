@@ -36,6 +36,7 @@ GLuint shader_light_color;
 GLuint shader_light_direction;
 GLuint shader_light_type;
 GLuint shader_silhouette;
+GLuint shader_texture;
 
 bool silhouette = false;
 
@@ -192,8 +193,13 @@ void display()
 	glUniform1fv(mytime_loc,1,&time) ; 
 	setLight();
 
+	glUniform1i(shader_light_position, 1);
+
 	/**ADD CODE TO DRAW THE OBJ MODEL, INSTEAD OF THE CUBE**/
 	myobj1->displayObject();
+
+	glTranslatef(2,0,0);
+	myobj2->displayObject();
 //	myobj1->displayNormals();
 
 	glFlush();
@@ -219,11 +225,25 @@ void init()
 	shader_light_direction = glGetUniformLocation(shaderprogram, "mylight_direction");
 	shader_light_type = glGetUniformLocation(shaderprogram, "mylight_type");
 	shader_silhouette = glGetUniformLocation(shaderprogram, "silhouette");
+	shader_silhouette = glGetUniformLocation(shaderprogram, "tex");
+
+	myTexture *t = new myTexture();
+	t->readTexture("ppm/br_color.ppm");
+	
 
 	myobj1 = new myObject3D();
 	myobj1->readMesh("hand.obj");
 	myobj1->computeNormals();
+	myobj1->computeCylinderTexture();
 	myobj1->createObjectBuffers();
+	myobj1->mytex = t;
+
+	myobj2 = new myObject3D();
+	myobj2->readMesh("apple.obj");
+	myobj2->computeNormals();
+	myobj2->computeCylinderTexture();
+	myobj2->createObjectBuffers();
+	myobj2->mytex = t;
 }
 
 
