@@ -8,7 +8,8 @@ uniform int mylight_type;
 
 uniform bool silhouette;
 
-uniform sampler2D tex ;
+uniform sampler2D tex;
+uniform sampler2D bump;
 
 in vec4 myvertex;
 in vec3 mynormal;
@@ -24,7 +25,8 @@ void main (void)
 
    	vec3 lightpos = mylight_position.xyz;
 
-	vec3 normal = normalize(gl_NormalMatrix*mynormal);
+	//vec3 normal = normalize(gl_NormalMatrix*mynormal);
+	vec3 normal = normalize(texture2D(bump,gl_TexCoord[0].st).xyz*2.0-1.0);
 
 	vec3 eyedir = normalize(eyepos - mypos) ;
 
@@ -54,6 +56,7 @@ void main (void)
 		else if(mylight_type == 2) // DIRECTIONAL
 		{
 			lightdir = normalize(-mylight_direction);
+
 		}
 	
 
@@ -61,6 +64,7 @@ void main (void)
 
 		gl_FragColor = color*mylight_color*max(dot(lightdir, normal),0) 
 					   + color*mylight_color*pow(max(dot(reflectdir, eyedir),0), 20);
+
 	}
 
 	if(silhouette) gl_FragColor = vec4(0,0,0.05/(abs(dot(eyedir, normal))),1 );

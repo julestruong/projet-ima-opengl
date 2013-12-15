@@ -37,6 +37,7 @@ GLuint shader_light_direction;
 GLuint shader_light_type;
 GLuint shader_silhouette;
 GLuint shader_texture;
+GLuint shader_bump;
 
 bool silhouette = false;
 
@@ -196,10 +197,10 @@ void display()
 	glUniform1i(shader_light_position, 1);
 
 	/**ADD CODE TO DRAW THE OBJ MODEL, INSTEAD OF THE CUBE**/
-	myobj1->displayObject();
+	myobj1->displayObject(shader_texture,shader_bump);
 
 	glTranslatef(2,0,0);
-	myobj2->displayObject();
+	//myobj2->displayObject(shader_texture,shader_bump);
 //	myobj1->displayNormals();
 
 	glFlush();
@@ -225,25 +226,33 @@ void init()
 	shader_light_direction = glGetUniformLocation(shaderprogram, "mylight_direction");
 	shader_light_type = glGetUniformLocation(shaderprogram, "mylight_type");
 	shader_silhouette = glGetUniformLocation(shaderprogram, "silhouette");
-	shader_silhouette = glGetUniformLocation(shaderprogram, "tex");
+	shader_texture = glGetUniformLocation(shaderprogram, "tex");
+	shader_bump = glGetUniformLocation(shaderprogram, "bump");
 
 	myTexture *t = new myTexture();
-	t->readTexture("ppm/br_color.ppm");
+	t->readTexture("ppm/ppm/br_color.ppm");
+
+	myTexture *b = new myTexture();
+	b->readTexture("ppm/ppm/br_normal.ppm");
 	
 
 	myobj1 = new myObject3D();
 	myobj1->readMesh("hand.obj");
 	myobj1->computeNormals();
 	myobj1->computeCylinderTexture();
+	myobj1->computeCylinderBump();
 	myobj1->createObjectBuffers();
 	myobj1->mytex = t;
+	myobj1->mybump = b;
 
-	myobj2 = new myObject3D();
+	/*myobj2 = new myObject3D();
 	myobj2->readMesh("apple.obj");
 	myobj2->computeNormals();
 	myobj2->computeCylinderTexture();
+	myobj2->computeCylinderBump();
 	myobj2->createObjectBuffers();
 	myobj2->mytex = t;
+	myobj2->mybump = b;*/
 }
 
 
