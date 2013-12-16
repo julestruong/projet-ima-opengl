@@ -14,6 +14,15 @@ uniform sampler2D bump;
 in vec4 myvertex;
 in vec3 mynormal;
 
+
+vec4 calculFragColor(vec4 color, vec3 lightdir, vec3 eyedir, vec3 normal, vec3 reflectdir)
+{
+	return color*mylight_color*max(dot(lightdir, normal),0) 
+			+ color*mylight_color*pow(max(dot(reflectdir, eyedir),0), 20)
+			+ color/5; //ambiant
+}
+
+
 void main (void) 
 {        
 	vec4 color = texture2D(tex, gl_TexCoord[0].st);
@@ -25,13 +34,19 @@ void main (void)
 
    	vec3 lightpos = mylight_position.xyz;
 
-	//vec3 normal = normalize(gl_NormalMatrix*mynormal);
-	vec3 normal = normalize(texture2D(bump,gl_TexCoord[0].st).xyz*2.0-1.0);
+	vec3 normal = normalize(gl_NormalMatrix*mynormal);
+	//vec3 normal = normalize(texture2D(bump,gl_TexCoord[0].st).xyz*2.0-1.0);
 
-	vec3 eyedir = normalize(eyepos - mypos) ;
-
-
-	vec3 lightdir = (mypos - mypos);
+	vec3 eyedir = normalize(eyepos - mypos);
+	
+	
+	
+	
+	// ==============================
+	// == Calcul de l'illumination ==
+	// ==============================
+	
+	vec3 lightdir = vec3(0,0,0) ; 
 
 	if(mylight_type == 3) // SPOT
 	{
@@ -41,9 +56,11 @@ void main (void)
 			vec3 reflectdir = normalize( reflect(-lightdir, normal) );
 
 			//gl_FragColor = vec4(1,0,0,1) *pow(dot(lightdir,-normalize(mypos-lightpos)),20);
-			gl_FragColor = (vec4(1,0,0,0)*mylight_color*max(dot(lightdir, normal),0) 
-					   + vec4(0.5,0.5,0.5,0)*mylight_color*pow(max(dot(reflectdir, eyedir),0), 20))
-					   *pow(dot(lightdir,-normalize(mypos-lightpos)),30);
+			//gl_FragColor = (vec4(1,0,0,0)*mylight_color*max(dot(lightdir, normal),0) 
+			//		   + vec4(0.5,0.5,0.5,0)*mylight_color*pow(max(dot(reflectdir, eyedir),0), 20))
+			//		   *pow(dot(lightdir,-normalize(mypos-lightpos)),30);
+			gl_FragColor = calculFragColor(color, lightdir, eyedir, normal, reflectdir)
+							*pow(dot(lightdir,-normalize(mypos-lightpos)),30);
 		}
 	}
 
@@ -62,8 +79,9 @@ void main (void)
 
 		vec3 reflectdir = normalize( reflect(-lightdir, normal) );
 
-		gl_FragColor = color*mylight_color*max(dot(lightdir, normal),0) 
-					   + color*mylight_color*pow(max(dot(reflectdir, eyedir),0), 20);
+		//gl_FragColor = color*mylight_color*max(dot(lightdir, normal),0) 
+		//			   + color*mylight_color*pow(max(dot(reflectdir, eyedir),0), 20);
+		gl_FragColor = calculFragColor(color, lightdir, eyedir, normal, reflectdir);
 
 	}
 

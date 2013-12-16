@@ -4,6 +4,7 @@
 #include <GL/glew.h>
 #include <GL/glut.h>
 
+
 using namespace std;
 
 #include "shaders.h"
@@ -53,6 +54,10 @@ int GLUTmouse[2] = { 0, 0 };
 
 myObject3D *myobj1;
 myObject3D *myobj2;
+
+myObject3D* walls[4];
+myObject3D *sol;
+myObject3D *plafond;
 
 //This function is called when a mouse button is pressed.
 void mouse(int button, int state, int x, int y)
@@ -197,11 +202,38 @@ void display()
 	glUniform1i(shader_light_position, 1);
 
 	/**ADD CODE TO DRAW THE OBJ MODEL, INSTEAD OF THE CUBE**/
-	myobj1->displayObject(shader_texture,shader_bump);
+	glPushMatrix();
+	glScalef(10,1,0.1);
+	walls[0]->displayObject(shader_texture,shader_bump);
+	
+	glPopMatrix();
+	glPushMatrix();
+	glTranslatef(5,0,5);
+	glScalef(0.1,1,10);
+	walls[1]->displayObject(shader_texture,shader_bump);
 
-	glTranslatef(2,0,0);
+	glPopMatrix();
+	glPushMatrix();
+	glTranslatef(0,0,10);
+	glScalef(10,1,0.1);
+	walls[2]->displayObject(shader_texture,shader_bump);
+
+	glPopMatrix();
+	glPushMatrix();
+	glTranslatef(-5,0,5);
+	glScalef(0.1,1,10);
+	walls[3]->displayObject(shader_texture,shader_bump);
+	glPopMatrix();
+
+	//glTranslatef(2,0,0);
 	//myobj2->displayObject(shader_texture,shader_bump);
 //	myobj1->displayNormals();
+
+	glPushMatrix();
+	glTranslatef(0,-0.5,5);
+	glScalef(10,0.1,10);
+	sol->displayObject(shader_texture,shader_bump);
+	glPopMatrix();
 
 	glFlush();
 }
@@ -235,15 +267,30 @@ void init()
 	myTexture *b = new myTexture();
 	b->readTexture("ppm/ppm/br_normal.ppm");
 	
+	int i;
+	for(i=0; i<4; i++)
+	{
+		walls[i] = new myObject3D();
+		walls[i]->readMesh("cube.obj");
+		walls[i]->computeNormals();
+		walls[i]->computeCylinderTexture();
+		walls[i]->computeCylinderBump();
+		walls[i]->createObjectBuffers();
+		walls[i]->mytex = t;
+		walls[i]->mybump = b;
+	}
 
-	myobj1 = new myObject3D();
-	myobj1->readMesh("hand.obj");
-	myobj1->computeNormals();
-	myobj1->computeCylinderTexture();
-	myobj1->computeCylinderBump();
-	myobj1->createObjectBuffers();
-	myobj1->mytex = t;
-	myobj1->mybump = b;
+	myTexture *t2 = new myTexture();
+	t2->readTexture("ppm/ppm/4351-diffuse.ppm");
+
+	sol = new myObject3D();
+	sol->readMesh("cube.obj");
+	sol->computeNormals();
+	sol->computeCylinderTexture();
+	sol->computeCylinderBump();
+	sol->createObjectBuffers();
+	sol->mytex = t2;
+	sol->mybump = b;
 
 	/*myobj2 = new myObject3D();
 	myobj2->readMesh("apple.obj");
