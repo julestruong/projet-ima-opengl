@@ -4,7 +4,6 @@
 #include <GL/glew.h>
 #include <GL/glut.h>
 
-
 using namespace std;
 
 #include "shaders.h"
@@ -19,8 +18,43 @@ using namespace std;
 #define DIRECTIONAL_LIGHT 2
 #define SPOT_LIGHT 3
 
+#define SOLEIL 0
+#define MERCURE 1
+#define VENUS 2
+#define TERRE 3
+#define MARS 4
+#define JUPITER 5
+#define SATURNE 6
+#define URANUS 7
+#define NEPTUNE 8
+#define LUNE 9
+#define LUNE2 10
+#define LUNE3 11
+
+#define RAYON 0
+#define DISTANCE 1
+#define VITESSE 2
+
+int indice;
+
+float planetInfo[20][3];
+
+
 // width and height of the window.
 int Glut_w = 600, Glut_h = 400; 
+
+GLUquadric *orbite;
+GLUquadric *sphereSoleil;
+GLUquadric *sphereTerre;
+GLUquadric *sphereLune;
+GLUquadric *sphereJupiter;
+GLUquadric *sphereEuropa;
+GLUquadric *sphereCallisto;
+
+int deltaT = 0;
+int clockSave = 0;
+
+float rotations[11], incr[11];
 
 std::vector<light*> lightsVector;
 int indiceLight = 0;
@@ -56,6 +90,7 @@ myObject3D *myobj1;
 myObject3D *myobj2;
 
 myObject3D* walls[4];
+myObject3D* planet[20];
 myObject3D *sol;
 myObject3D *plafond;
 
@@ -181,6 +216,25 @@ void setLight()
 //This function is called to display objects on screen.
 void display() 
 {
+	int t;
+	t=time;
+	deltaT=t-clockSave;
+	clockSave=t;
+	deltaT *= 0.4;
+
+	rotations[0] += incr[0]*deltaT;
+	rotations[1] += incr[1]*deltaT;
+	rotations[2] += incr[2]*deltaT;
+	rotations[3] += incr[3]*deltaT;
+	rotations[4] += incr[4]*deltaT;
+	rotations[5] += incr[5]*deltaT;
+	rotations[6] += incr[6]*deltaT;
+	rotations[7] += incr[7]*deltaT;
+	rotations[8] += incr[8]*deltaT;
+	rotations[9] += incr[9]*deltaT;
+	rotations[10] += incr[10]*deltaT;
+
+
 	//Clearing the color on the screen.
 	glClearColor(0.0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -201,8 +255,10 @@ void display()
 
 	glUniform1i(shader_light_position, 1);
 
+
+
 	/**ADD CODE TO DRAW THE OBJ MODEL, INSTEAD OF THE CUBE**/
-	glPushMatrix();
+	/*glPushMatrix();
 	glScalef(10,1,0.1);
 	walls[0]->displayObject(shader_texture,shader_bump);
 	
@@ -223,18 +279,93 @@ void display()
 	glTranslatef(-5,0,5);
 	glScalef(0.1,1,10);
 	walls[3]->displayObject(shader_texture,shader_bump);
-	glPopMatrix();
+	glPopMatrix();*/
 
 	//glTranslatef(2,0,0);
 	//myobj2->displayObject(shader_texture,shader_bump);
 //	myobj1->displayNormals();
 
-	glPushMatrix();
+	/*glPushMatrix();
 	glTranslatef(0,-0.5,5);
 	glScalef(10,0.1,10);
 	sol->displayObject(shader_texture,shader_bump);
-	glPopMatrix();
+	glPopMatrix();*/
+	//myobj2->displayObject(shader_texture,shader_bump);
+	
+	 glPushMatrix();
 
+	   gluDisk(orbite,7.9,8.0,50,1);
+
+	   gluDisk(orbite,15.9,16.0,50,1);
+
+	   glPushMatrix();
+
+			glRotatef(rotations[2],0.0,0.0,1.0);
+			glTranslatef( -8, 0, 0 ); // translation bidon
+			glRotatef(rotations[1],0.0,0.0,1.0);
+			glPushMatrix();
+				glScalef(planetInfo[TERRE][RAYON], planetInfo[TERRE][RAYON], planetInfo[TERRE][RAYON]);
+				planet[TERRE]->displayObject(shader_texture,shader_bump);
+			glPopMatrix();
+		   //gluSphere( sphereTerre, 0.3, 32, 32 );
+
+		   glPushMatrix();
+				glRotatef(rotations[4],0.0,0.0,1.0);
+				glTranslatef( 1.0, 0, 0 ); // translation bidon
+				glRotatef(rotations[3],0.0,0.0,1.0);
+				glPushMatrix();
+					glScalef(planetInfo[LUNE][RAYON], planetInfo[LUNE][RAYON], planetInfo[LUNE][RAYON]);
+					planet[LUNE]->displayObject(shader_texture,shader_bump);
+				glPopMatrix();
+				//gluSphere( sphereLune, 0.1, 32, 32 );
+			glPopMatrix();
+
+		glPopMatrix();
+
+		glPushMatrix();
+
+			glRotatef(rotations[6],0.0,0.0,1.0);
+			glTranslatef( -16, 0, 0 ); // translation bidon
+			glRotatef(rotations[5],0.0,0.0,1.0);
+			planet[3]->displayObject(shader_texture,shader_bump);
+			//gluSphere( sphereJupiter, 0.8, 32, 32 );
+
+		   glPushMatrix();
+				glRotatef(rotations[8],0.0,0.0,1.0);
+				glTranslatef( 1.5, 0, 0 ); // translation bidon
+				glRotatef(rotations[7],0.0,0.0,1.0);
+				glPushMatrix();
+					glScalef(planetInfo[LUNE][RAYON], planetInfo[LUNE][RAYON], planetInfo[LUNE][RAYON]);
+					planet[LUNE]->displayObject(shader_texture,shader_bump);
+				glPopMatrix();
+		   glPopMatrix();
+
+			glPushMatrix();
+				glRotatef(rotations[10],0.0,0.0,1.0);
+				glTranslatef( 1.5, 0, 0 ); // translation bidon
+				glRotatef(rotations[9],0.0,0.0,1.0);
+				glPushMatrix();
+					glScalef(planetInfo[LUNE][RAYON], planetInfo[LUNE][RAYON], planetInfo[LUNE][RAYON]);
+					planet[LUNE]->displayObject(shader_texture,shader_bump);
+				glPopMatrix();
+				//gluSphere( sphereCallisto, 0.1, 32, 32 );
+		   glPopMatrix();
+
+		glPopMatrix();
+
+		glPushMatrix();
+
+		   glTranslatef( 0, 0, 0 ); // translation bidon
+		   glRotatef(rotations[0],0.0,0.0,1.0);
+		   glScalef(planetInfo[SOLEIL][RAYON], planetInfo[SOLEIL][RAYON], planetInfo[SOLEIL][RAYON]);
+		   planet[0]->displayObject(shader_texture,shader_bump);
+		   //gluSphere( sphereSoleil, 2, 32, 32 );
+
+		glPopMatrix();
+
+
+   glPopMatrix();
+	
 	glFlush();
 }
 
@@ -248,6 +379,28 @@ void animation(void)
 //This function is called from the main to initalize everything.
 void init()
 {
+
+	planetInfo[SOLEIL][RAYON] = 5;//34.7;
+	planetInfo[TERRE][RAYON] = 1;
+	planetInfo[JUPITER][RAYON] = 2;//11.2;
+
+	planetInfo[LUNE][RAYON] = 0.2;
+
+
+	orbite = gluNewQuadric();
+	sphereSoleil = gluNewQuadric();
+   sphereLune = gluNewQuadric();
+   sphereTerre = gluNewQuadric();
+   sphereJupiter = gluNewQuadric();
+   sphereEuropa = gluNewQuadric();
+   sphereCallisto = gluNewQuadric();
+
+   rotations[0]=0.0; rotations[1]=0.0; rotations[2]=45.0; rotations[3]=0.0; rotations[4]=30.0; rotations[5]=0.0;
+   rotations[6]=30.0; rotations[7]=0.0; rotations[8]=15.0; rotations[9]=0.0; rotations[10]=2.0;
+
+   incr[0]=0.001; incr[1]=0.5; incr[2]=0.005; incr[3]=0.5; incr[4]=0.07; incr[5]=0.01; incr[6]=0.003; incr[7]=0.7;
+   incr[8]=0.09; incr[9]=0.8; incr[10]=0.7;
+
     vertexshader = initshaders(GL_VERTEX_SHADER, "shaders/light.vert.glsl") ;
     fragmentshader = initshaders(GL_FRAGMENT_SHADER, "shaders/light.frag.glsl") ;
     shaderprogram = initprogram(vertexshader, fragmentshader) ; 
@@ -262,12 +415,13 @@ void init()
 	shader_bump = glGetUniformLocation(shaderprogram, "bump");
 
 	myTexture *t = new myTexture();
-	t->readTexture("ppm/ppm/br_color.ppm");
+	//t->readTexture("ppm/ppm/br_color.ppm");
+	t->readTexture("ppm/ppm/earthmap1k.ppm");
 
 	myTexture *b = new myTexture();
 	b->readTexture("ppm/ppm/br_normal.ppm");
 	
-	int i;
+	/*int i;
 	for(i=0; i<4; i++)
 	{
 		walls[i] = new myObject3D();
@@ -278,22 +432,35 @@ void init()
 		walls[i]->createObjectBuffers();
 		walls[i]->mytex = t;
 		walls[i]->mybump = b;
+	}*/
+
+	int i;
+	for(i=0; i<20; i++)
+	{
+		planet[i] = new myObject3D();
+		planet[i]->readMesh("TriangularObjs/ball.objtri.obj");
+		planet[i]->computeNormals();
+		planet[i]->computeCylinderTexture();
+		planet[i]->computeCylinderBump();
+		planet[i]->createObjectBuffers();
+		planet[i]->mytex = t;
+		planet[i]->mybump = b;
 	}
 
 	myTexture *t2 = new myTexture();
 	t2->readTexture("ppm/ppm/4351-diffuse.ppm");
 
-	sol = new myObject3D();
+	/*sol = new myObject3D();
 	sol->readMesh("cube.obj");
 	sol->computeNormals();
 	sol->computeCylinderTexture();
 	sol->computeCylinderBump();
 	sol->createObjectBuffers();
 	sol->mytex = t2;
-	sol->mybump = b;
+	sol->mybump = b;*/
 
 	/*myobj2 = new myObject3D();
-	myobj2->readMesh("apple.obj");
+	myobj2->readMesh("TriangularObjs/zune_120.objtri.obj");
 	myobj2->computeNormals();
 	myobj2->computeCylinderTexture();
 	myobj2->computeCylinderBump();
@@ -321,6 +488,8 @@ int main(int argc, char* argv[]) {
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc (GL_LESS) ;
+
+
 
 	init();
 
