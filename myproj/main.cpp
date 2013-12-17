@@ -261,8 +261,42 @@ void display()
 	 glTranslatef( 0, 0, -8 );
 
 	/**ADD CODE TO DRAW THE OBJ MODEL, INSTEAD OF THE CUBE**/
+	/* glPushMatrix();
+		glScalef(30,30,30);
+		glBegin(GL_QUADS);
+			glVertex3f(-1,1,-1);
+			glVertex3f(-1,1,1);
+			glVertex3f(-1,-1,1);
+			glVertex3f(-1,-1,-1);
 
-	glPushMatrix();
+			glVertex3f(-1,1,1);
+			glVertex3f(1,1,1);
+			glVertex3f(1,-1,1);
+			glVertex3f(-1,-1,1);
+
+			glVertex3f(1,1,1);
+			glVertex3f(1,1,-1);
+			glVertex3f(1,-1,-1);
+			glVertex3f(1,-1,1);
+
+			glVertex3f(1,1,-1);
+			glVertex3f(-1,1,-1);
+			glVertex3f(-1,-1,-1);
+			glVertex3f(1,-1,-1);
+
+			glVertex3f(-1,1,-1);
+			glVertex3f(-1,1,1);
+			glVertex3f(1,1,1);
+			glVertex3f(1,1,-1);
+
+			glVertex3f(-1,-1,-1);
+			glVertex3f(-1,-1,1);
+			glVertex3f(1,-1,1);
+			glVertex3f(1,-1,-1);
+		glEnd();
+	glPopMatrix();*/
+
+	/*glPushMatrix();
 		glRotatef(90, 1.0, 0.0, 0.0);
 		glScalef(6,6,6);
 		glTranslatef(0.0,0.0,-5.0);
@@ -289,8 +323,12 @@ void display()
 			glScalef(0.1,2,10);
 			walls[3]->displayObject(shader_texture,shader_bump);
 		glPopMatrix();
-	glPopMatrix();
-
+	glPopMatrix();*/
+		glPushMatrix();
+			glScalef(30,30,30);
+			glTranslatef(0,0,-1);
+			walls[3]->displayObject(shader_texture,shader_bump);
+		glPopMatrix();
 	//glTranslatef(2,0,0);
 	//myobj2->displayObject(shader_texture,shader_bump);
 //	myobj1->displayNormals();
@@ -476,7 +514,7 @@ void init()
 	for(i=0; i<4; i++)
 	{
 		walls[i] = new myObject3D();
-		walls[i]->readMesh("cube.obj");
+		walls[i]->readMesh("carree.obj");
 		walls[i]->computeNormals();
 		walls[i]->computeCylinderTexture();
 		walls[i]->computeCylinderBump();
@@ -488,7 +526,8 @@ void init()
 	for(i=0; i<20; i++)
 	{
 		planet[i] = new myObject3D();
-		planet[i]->readMesh("TriangularObjs/ball.objtri.obj");
+		//planet[i]->readMesh("TriangularObjs/ball.objtri.obj");
+		planet[i]->readMesh("TriangularObjs/sphere.obj");
 		planet[i]->computeNormals();
 		planet[i]->computeCylinderTexture();
 		planet[i]->computeCylinderBump();
