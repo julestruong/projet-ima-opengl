@@ -93,6 +93,7 @@ myObject3D *myobj2;
 
 myObject3D* walls[4];
 myObject3D* planet[20];
+myObject3D* plane;
 myObject3D *sol;
 myObject3D *plafond;
 
@@ -251,6 +252,15 @@ void display()
 	//Setting up the modelview matrix.
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+
+	glPushMatrix();
+		glTranslatef( 0, -0.2, -0.5 );
+		glRotatef(-90, 0.0, 0.0, 1.0);
+		glRotatef(-80, 0.0, 1.0, 0.0);
+		glScalef(0.3,0.3,0.3);
+		plane->displayObject(shader_texture,shader_bump);
+	glPopMatrix();  
+
 	gluLookAt(camera_eye.X, camera_eye.Y, camera_eye.Z, camera_eye.X + camera_forward.dX, camera_eye.Y + camera_forward.dY, camera_eye.Z + camera_forward.dZ, camera_up.dX, camera_up.dY, camera_up.dZ);
 
 	glUniform1fv(mytime_loc,1,&time) ; 
@@ -433,10 +443,9 @@ void display()
 
 		glPopMatrix();
 
-
    glPopMatrix();
 
-  
+	
 	
 	glFlush();
 }
@@ -561,6 +570,15 @@ void init()
 	myobj2->createObjectBuffers();
 	myobj2->mytex = t;
 	myobj2->mybump = b;*/
+
+	plane = new myObject3D();
+	plane->readMesh("TriangularObjs/shuttle.objtri.obj");
+	plane->computeNormals();
+	plane->computeCylinderTexture();
+	plane->computeCylinderBump();
+	plane->createObjectBuffers();
+	plane->mytex = t;
+	plane->mybump = b;
 }
 
 
