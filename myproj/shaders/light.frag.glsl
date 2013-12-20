@@ -9,7 +9,6 @@ uniform int mylight_type;
 uniform bool silhouette;
 
 uniform sampler2D tex;
-uniform sampler2D bump;
 
 in vec4 myvertex;
 in vec3 mynormal;
@@ -17,9 +16,9 @@ in vec3 mynormal;
 
 vec4 calculFragColor(vec4 color, vec3 lightdir, vec3 eyedir, vec3 normal, vec3 reflectdir)
 {
-	return color*mylight_color*max(dot(lightdir, normal),0) 
+	return color*mylight_color*max(dot(lightdir, normal),0); 
 			+ color*mylight_color*pow(max(dot(reflectdir, eyedir),0), 20)
-			+ color/5; //ambiant
+			+ color/7; //ambiant
 }
 
 
@@ -32,7 +31,10 @@ void main (void)
 	vec4 _mypos = gl_ModelViewMatrix * myvertex ; 
     vec3 mypos = (_mypos.xyz / _mypos.w);
 
-   	vec3 lightpos = mylight_position.xyz;
+	vec4 _lightpos = vec4(mylight_position, 1.0);
+   	vec3 lightpos = _lightpos.xyz/_lightpos.w;
+
+
 
 	vec3 normal = normalize(gl_NormalMatrix*mynormal);
 	//vec3 normal = normalize(texture2D(bump,gl_TexCoord[0].st).xyz*2.0-1.0);
@@ -60,7 +62,8 @@ void main (void)
 			//		   + vec4(0.5,0.5,0.5,0)*mylight_color*pow(max(dot(reflectdir, eyedir),0), 20))
 			//		   *pow(dot(lightdir,-normalize(mypos-lightpos)),30);
 			gl_FragColor = calculFragColor(color, lightdir, eyedir, normal, reflectdir)
-							*pow(dot(lightdir,-normalize(mypos-lightpos)),30);
+							*pow(dot(lightdir,-normalize(mypos-lightpos)),30)
+							+ color/5; //ambiant
 		}
 	}
 

@@ -11,20 +11,37 @@
 class myObject3D
 {
 public:
-	GLuint buffers[5];
+	GLuint buffers[4];
 
 	GLfloat *vertices;
 	GLuint *indices;
 	GLfloat *normals;
 	GLfloat *textures;
-	GLfloat *bumps;
 
 	myTexture *mytex;
-	myTexture *mybump;
 
 	int n, m;
   
 	myObject3D() {
+	}
+
+	void computeSquareTexture()
+	{
+		textures = new GLfloat[12];
+		textures[0] = 0;
+		textures[1] = 0;
+		textures[2] = 1;
+		textures[3] = 0;
+		textures[4] = 1;
+		textures[5] = 1;
+
+		textures[6] = 0;
+		textures[7] = 1;
+		textures[8] = 0;
+		textures[9] = 0;
+		textures[10] = 1;
+		textures[11] = 1;
+		  
 	}
 
 	void computeCylinderTexture()
@@ -36,32 +53,17 @@ public:
 		for (int i=0;i<n;i++)
 		{
 			x = vertices[3*i]; y = vertices[3*i+1]; z = vertices[3*i+2];
-	
 			textures[2*i] = z;
 			if ( y>=0.0f )     textures[2*i+1] = atan2(  y,  x ) / (PI) ;
 			else if ( y<0.0f )  textures[2*i+1] = (- atan2(  y,  x )) / (PI) ;
+			
 			//this has problems at the seam, when 1->0 and so interpoltion results in the whole image squeezed between the two border vertices.
 			//if ( y>=0.0f )     textures[2*i+1] = atan2(  y,  x ) / (2*PI) ;
 			//else if ( y<0.0f )  textures[2*i+1] = (2*PI + atan2(  y,  x )) / (2*PI) ;
 		}
 	}
 
-	void computeCylinderBump()
-	{
 
-		
-		bumps = new GLfloat[2*n];
-		GLfloat x, y, z;
-		for (int i=0;i<n;i++)
-		{
-			x = vertices[3*i]; y = vertices[3*i+1]; z = vertices[3*i+2];
-	
-			bumps[2*i] = z;
-			if ( y>=0.0f )     bumps[2*i+1] = atan2(  y,  x ) / (PI) ;
-			else if ( y<0.0f )  bumps[2*i+1] = (- atan2(  y,  x )) / (PI) ;
-		
-		}
-	}
 
 	void normalize()
 	{
@@ -195,7 +197,7 @@ public:
 
 	void createObjectBuffers()
 	{
-		glGenBuffers(5, buffers);
+		glGenBuffers(4, buffers);
 
 		glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
 		glBufferData(GL_ARRAY_BUFFER, n*3*4, vertices, GL_STATIC_DRAW);
@@ -209,11 +211,9 @@ public:
 		glBindBuffer(GL_ARRAY_BUFFER, buffers[1]);
 		glBufferData(GL_ARRAY_BUFFER, n*2*4, textures, GL_STATIC_DRAW);
 
-		glBindBuffer(GL_ARRAY_BUFFER, buffers[4]);
-		glBufferData(GL_ARRAY_BUFFER, n*2*4, bumps, GL_STATIC_DRAW);
 	}
 
-	void displayObject(GLuint shader_texture,GLuint shader_bump)
+	void displayObject(GLuint shader_texture)
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
 		glVertexPointer(3, GL_FLOAT, 0, 0);
@@ -230,13 +230,6 @@ public:
 		glUniform1i(shader_texture, 1); 
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, mytex->texName) ;
-
-		glBindBuffer(GL_ARRAY_BUFFER, buffers[4]);
-		glTexCoordPointer(2,GL_FLOAT,0,0) ;
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY) ;
-		glUniform1i(shader_bump, 2); 
-		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, mybump->texName) ;
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[2]);
 
