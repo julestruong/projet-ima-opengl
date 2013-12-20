@@ -6,6 +6,11 @@ uniform vec4 mylight_color;
 uniform vec3 mylight_direction;
 uniform int mylight_type;
 
+uniform vec3 mylight_position2;
+uniform vec4 mylight_color2;
+uniform vec3 mylight_direction2;
+uniform int mylight_type2;
+
 uniform bool silhouette;
 
 uniform sampler2D tex;
@@ -16,25 +21,29 @@ in vec3 mynormal;
 
 vec4 calculFragColor(vec4 color, vec3 lightdir, vec3 eyedir, vec3 normal, vec3 reflectdir)
 {
-	return color*mylight_color*max(dot(lightdir, normal),0); 
-			+ color*mylight_color*pow(max(dot(reflectdir, eyedir),0), 20)
-			+ color/7; //ambiant
+	return color*mylight_color*max(dot(lightdir, normal),0) 
+			+ color*mylight_color*pow(max(dot(reflectdir, eyedir),0), 20); 
 }
 
 
 void main (void) 
 {        
 	vec4 color = texture2D(tex, gl_TexCoord[0].st);
+	vec4 colorTmp;
 	
 	vec3 eyepos = vec3(0,0,0) ; 
 
 	vec4 _mypos = gl_ModelViewMatrix * myvertex ; 
     vec3 mypos = (_mypos.xyz / _mypos.w);
 
+
+	//Light 1
 	vec4 _lightpos = vec4(mylight_position, 1.0);
    	vec3 lightpos = _lightpos.xyz/_lightpos.w;
 
-
+	//Light 2
+	vec4 _lightpos2 = vec4(mylight_position2, 1.0);
+   	vec3 lightpos2 = _lightpos2.xyz/_lightpos2.w;
 
 	vec3 normal = normalize(gl_NormalMatrix*mynormal);
 	//vec3 normal = normalize(texture2D(bump,gl_TexCoord[0].st).xyz*2.0-1.0);
@@ -45,7 +54,7 @@ void main (void)
 	
 	
 	// ==============================
-	// == Calcul de l'illumination ==
+	// == Calcul de l'illumination 1==
 	// ==============================
 	
 	vec3 lightdir = vec3(0,0,0) ; 
@@ -61,9 +70,8 @@ void main (void)
 			//gl_FragColor = (vec4(1,0,0,0)*mylight_color*max(dot(lightdir, normal),0) 
 			//		   + vec4(0.5,0.5,0.5,0)*mylight_color*pow(max(dot(reflectdir, eyedir),0), 20))
 			//		   *pow(dot(lightdir,-normalize(mypos-lightpos)),30);
-			gl_FragColor = calculFragColor(color, lightdir, eyedir, normal, reflectdir)
-							*pow(dot(lightdir,-normalize(mypos-lightpos)),30)
-							+ color/5; //ambiant
+			colorTmp = calculFragColor(color, lightdir, eyedir, normal, reflectdir)
+							*pow(dot(lightdir,-normalize(mypos-lightpos)),30);
 		}
 	}
 
@@ -84,9 +92,59 @@ void main (void)
 
 		//gl_FragColor = color*mylight_color*max(dot(lightdir, normal),0) 
 		//			   + color*mylight_color*pow(max(dot(reflectdir, eyedir),0), 20);
-		gl_FragColor = calculFragColor(color, lightdir, eyedir, normal, reflectdir);
+		colorTmp = calculFragColor(color, lightdir, eyedir, normal, reflectdir);
 
 	}
+
+
+
+
+	// ==============================
+	// == Calcul de l'illumination 2==
+	// ==============================
+	
+	lightdir = vec3(0,0,0) ; 
+
+	if(mylight_type2 == 3) // SPOT
+	{
+		lightdir = normalize(-mylight_direction2);
+		if(dot(lightdir,-normalize(mypos-lightpos2)) > 0)
+		{
+			vec3 reflectdir = normalize( reflect(-lightdir, normal) );
+
+			//gl_FragColor = vec4(1,0,0,1) *pow(dot(lightdir,-normalize(mypos-lightpos2)),20);
+			//gl_FragColor = (vec4(1,0,0,0)*mylight_color2*max(dot(lightdir, normal),0) 
+			//		   + vec4(0.5,0.5,0.5,0)*mylight_color2*pow(max(dot(reflectdir, eyedir),0), 20))
+			//		   *pow(dot(lightdir,-normalize(mypos-lightpos2)),30);
+			gl_FragColor = 0.5 * colorTmp + 0.5 * calculFragColor(color, lightdir, eyedir, normal, reflectdir)
+							*pow(dot(lightdir,-normalize(mypos-lightpos2)),30);
+		}
+	}
+
+	else
+	{
+		if(mylight_type2 == 1) // POINT_LIGHT
+		{
+			lightdir = normalize (lightpos2 - mypos) ;
+		}
+		else if(mylight_type2 == 2) // DIRECTIONAL
+		{
+			lightdir = normalize(-mylight_direction2);
+
+		}
+	
+
+		vec3 reflectdir = normalize( reflect(-lightdir, normal) );
+
+		//gl_FragColor = color*mylight_color*max(dot(lightdir, normal),0) 
+		//			   + color*mylight_color*pow(max(dot(reflectdir, eyedir),0), 20);
+		gl_FragColor = 0.7 * colorTmp + 0.3 * calculFragColor(color, lightdir, eyedir, normal, reflectdir) + color/6; // + ambiant
+
+	}
+
+
+
+
 
 	if(silhouette) gl_FragColor = vec4(0,0,0.05/(abs(dot(eyedir, normal))),1 );
 	

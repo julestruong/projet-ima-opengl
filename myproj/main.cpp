@@ -16,9 +16,11 @@ using namespace std;
 
 #define POINT_LIGHT 1
 #define DIRECTIONAL_LIGHT 2
-#define SPOT_LIGHT 3
+#define SPOT_LIGHT 
 
-#define TAILLE_ORBIT 0.03
+#define DIST_WALL 90
+
+#define TAILLE_ORBIT 0.05
 
 #define SOLEIL 0
 #define MERCURE 1
@@ -75,6 +77,10 @@ GLuint shader_light_position;
 GLuint shader_light_color;
 GLuint shader_light_direction;
 GLuint shader_light_type;
+GLuint shader_light_position2;
+GLuint shader_light_color2;
+GLuint shader_light_direction2;
+GLuint shader_light_type2;
 GLuint shader_silhouette;
 GLuint shader_texture;
 
@@ -169,6 +175,15 @@ void keyboard(unsigned char key, int x, int y) {
 	glutPostRedisplay();
 }
 
+bool testWall()
+{
+	if(camera_eye.X > -DIST_WALL && camera_eye.X < DIST_WALL && camera_eye.Y > -DIST_WALL && camera_eye.Y < DIST_WALL  && camera_eye.Z > -DIST_WALL  && camera_eye.Z < DIST_WALL)
+	{
+		return true;
+	}
+	return false;
+}
+
 //This function is called when an arrow key is pressed.
 void keyboard2(int key, int x, int y) {
 	float speed = 1.0;
@@ -176,11 +191,19 @@ void keyboard2(int key, int x, int y) {
 	case GLUT_KEY_UP:
 		/**ADD CODE TO MOVE FORWARD**/
 		camera_eye.X += speed*camera_forward.dX; camera_eye.Y += speed*camera_forward.dY;camera_eye.Z += speed*camera_forward.dZ;
+		if(!testWall())
+		{
+			camera_eye.X -= speed*camera_forward.dX; camera_eye.Y -= speed*camera_forward.dY;camera_eye.Z -= speed*camera_forward.dZ;
+		}
 		//camera_eye += camera_forward;
 		break;
 	case GLUT_KEY_DOWN:
 		/**ADD CODE TO MOVE BACK**/
 		camera_eye.X -= speed*camera_forward.dX; camera_eye.Y -= speed*camera_forward.dY;camera_eye.Z -= speed*camera_forward.dZ;
+		if(!testWall())
+		{
+			camera_eye.X += speed*camera_forward.dX; camera_eye.Y += speed*camera_forward.dY;camera_eye.Z += speed*camera_forward.dZ;
+		}
 		//camera_eye += -camera_forward;
 		break;
 	case GLUT_KEY_LEFT:
@@ -195,6 +218,7 @@ void keyboard2(int key, int x, int y) {
 		rotate2(camera_forward, camera_up, -0.1);
 		camera_forward.normalize();
 		break;
+
 	}
 	glutPostRedisplay();
 }
@@ -218,6 +242,8 @@ void setLight()
 
 	(lightsVector.at(indiceLight % (lightsVector.size()) ) )->sendSpecificUniform(shader_light_type, shader_light_color, shader_light_position, shader_light_direction);
 
+	Point_light *pt_ligth = new Point_light(couleur, myPoint3D(0.0, 0.0, -1.0));
+		pt_ligth->sendSpecificUniform(shader_light_type2, shader_light_color2, shader_light_position2, shader_light_direction2);
 }
 
 //This function is called to display objects on screen.
@@ -234,20 +260,7 @@ void display()
 		planetInfo[i][REVOLUTION] += planetInfo[i][VITESSEREVOLUTION]*deltaT;
 		planetInfo[i][ROTATION] += planetInfo[i][VITESSEROTATION]*deltaT;
 	}
-	/*
-	rotations[0] += incr[0]*deltaT;
-	rotations[1] += incr[1]*deltaT;
-	rotations[2] += incr[2]*deltaT;
-	rotations[3] += incr[3]*deltaT;
-	rotations[4] += incr[4]*deltaT;
-	rotations[5] += incr[5]*deltaT;
-	rotations[6] += incr[6]*deltaT;
-	rotations[7] += incr[7]*deltaT;
-	rotations[8] += incr[8]*deltaT;
-	rotations[9] += incr[9]*deltaT;
-	rotations[10] += incr[10]*deltaT;
-	*/
-
+	
 	//Clearing the color on the screen.
 	glClearColor(0.0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -275,74 +288,12 @@ void display()
 	glUniform1fv(mytime_loc,1,&time) ; 
 	setLight();
 
+
 	glUniform1i(shader_light_position, 1);
 
 	 glTranslatef( 0, 0, -8 );
 
-	/**ADD CODE TO DRAW THE OBJ MODEL, INSTEAD OF THE CUBE**/
-	/* glPushMatrix();
-		glScalef(30,30,30);
-		glBegin(GL_QUADS);
-			glVertex3f(-1,1,-1);
-			glVertex3f(-1,1,1);
-			glVertex3f(-1,-1,1);
-			glVertex3f(-1,-1,-1);
-
-			glVertex3f(-1,1,1);
-			glVertex3f(1,1,1);
-			glVertex3f(1,-1,1);
-			glVertex3f(-1,-1,1);
-
-			glVertex3f(1,1,1);
-			glVertex3f(1,1,-1);
-			glVertex3f(1,-1,-1);
-			glVertex3f(1,-1,1);
-
-			glVertex3f(1,1,-1);
-			glVertex3f(-1,1,-1);
-			glVertex3f(-1,-1,-1);
-			glVertex3f(1,-1,-1);
-
-			glVertex3f(-1,1,-1);
-			glVertex3f(-1,1,1);
-			glVertex3f(1,1,1);
-			glVertex3f(1,1,-1);
-
-			glVertex3f(-1,-1,-1);
-			glVertex3f(-1,-1,1);
-			glVertex3f(1,-1,1);
-			glVertex3f(1,-1,-1);
-		glEnd();
-	glPopMatrix();*/
-
-	/*glPushMatrix();
-		glRotatef(90, 1.0, 0.0, 0.0);
-		glScalef(6,6,6);
-		glTranslatef(0.0,0.0,-5.0);
-
-		glPushMatrix();
-			glScalef(10,2,0.1);
-			walls[0]->displayObject(shader_texture);	
-		glPopMatrix();
-
-		glPushMatrix();
-			glTranslatef(5,0,5);
-			glScalef(0.1,2,10);
-			walls[1]->displayObject(shader_texture);
-		glPopMatrix();
-
-		glPushMatrix();
-			glTranslatef(0,0,10);
-			glScalef(10,2,0.1);
-			walls[2]->displayObject(shader_texture);
-		glPopMatrix();
-
-		glPushMatrix();
-			glTranslatef(-5,0,5);
-			glScalef(0.1,2,10);
-			walls[3]->displayObject(shader_texture);
-		glPopMatrix();
-	glPopMatrix();*/
+	//MURS
 	glPushMatrix();
 	glScalef(200,200,200);
 		glPushMatrix();
@@ -374,27 +325,10 @@ void display()
 			walls[5]->displayObject(shader_texture);
 		glPopMatrix();
 	glPopMatrix();
-	//glTranslatef(2,0,0);
-	//myobj2->displayObject(shader_texture);
-//	myobj1->displayNormals();
-
-	/*glPushMatrix();
-	glTranslatef(0,-0.5,5);
-	glScalef(10,0.1,10);
-	sol->displayObject(shader_texture);
-	glPopMatrix();*/
-	//myobj2->displayObject(shader_texture);
 	
-	 glPushMatrix();
 
-		gluDisk(orbite,planetInfo[MERCURE][DISTANCE]-TAILLE_ORBIT,planetInfo[MERCURE][DISTANCE],50,1); //Orbite MERCURE
-	   gluDisk(orbite,planetInfo[VENUS][DISTANCE]-TAILLE_ORBIT,planetInfo[VENUS][DISTANCE],50,1); //VENUS
-	   gluDisk(orbite,planetInfo[TERRE][DISTANCE]-TAILLE_ORBIT,planetInfo[TERRE][DISTANCE],50,1); //Orbite terre
-	   gluDisk(orbite,planetInfo[MARS][DISTANCE]-TAILLE_ORBIT,planetInfo[MARS][DISTANCE],50,1); //Mars
-	   gluDisk(orbite,planetInfo[JUPITER][DISTANCE]-TAILLE_ORBIT,planetInfo[JUPITER][DISTANCE],50,1); //Orbite Jupiter
-	   gluDisk(orbite,planetInfo[SATURNE][DISTANCE]-TAILLE_ORBIT,planetInfo[SATURNE][DISTANCE],50,1); //Orbite SATURNE
-	   gluDisk(orbite,planetInfo[URANUS][DISTANCE]-TAILLE_ORBIT,planetInfo[URANUS][DISTANCE],50,1); //URANUS
-	   gluDisk(orbite,planetInfo[NEPTUNE][DISTANCE]-TAILLE_ORBIT,planetInfo[NEPTUNE][DISTANCE],50,1); //Orbite NEPTUNE
+
+	 glPushMatrix();
 
 	   //MERCURE
 		glPushMatrix();
@@ -422,24 +356,21 @@ void display()
 	   glPushMatrix();
 
 			glRotatef(planetInfo[TERRE][REVOLUTION],0.0,0.0,1.0);
-			//glTranslatef( -8, 0, 0 ); // translation bidon
 			glTranslatef( planetInfo[TERRE][DISTANCE], 0, 0);
 			glRotatef(planetInfo[TERRE][ROTATION],0.0,0.0,1.0);
 			glPushMatrix();
 				glScalef(planetInfo[TERRE][RAYON], planetInfo[TERRE][RAYON], planetInfo[TERRE][RAYON]);
 				planet[TERRE]->displayObject(shader_texture);
 			glPopMatrix();
-		   //gluSphere( sphereTerre, 0.3, 32, 32 );
 
 		   glPushMatrix();
 				glRotatef(planetInfo[LUNE][REVOLUTION],0.0,0.0,1.0);
-				glTranslatef( 1.0, 0, 0 ); // translation bidon
+				glTranslatef( 1.0, 0, 0 ); 
 				glRotatef(planetInfo[LUNE][ROTATION],0.0,0.0,1.0);
 				glPushMatrix();
 					glScalef(planetInfo[LUNE][RAYON], planetInfo[LUNE][RAYON], planetInfo[LUNE][RAYON]);
 					planet[LUNE]->displayObject(shader_texture);
 				glPopMatrix();
-				//gluSphere( sphereLune, 0.1, 32, 32 );
 			glPopMatrix();
 
 		glPopMatrix();
@@ -448,14 +379,12 @@ void display()
 		glPushMatrix();
 
 			glRotatef(planetInfo[MARS][REVOLUTION],0.0,0.0,1.0);
-			//glTranslatef( -8, 0, 0 ); // translation bidon
 			glTranslatef( planetInfo[MARS][DISTANCE], 0, 0);
 			glRotatef(planetInfo[MARS][ROTATION],0.0,0.0,1.0);
 			glPushMatrix();
 				glScalef(planetInfo[MARS][RAYON], planetInfo[MARS][RAYON], planetInfo[MARS][RAYON]);
 				planet[MARS]->displayObject(shader_texture);
 			glPopMatrix();
-		   //gluSphere( sphereTerre, 0.3, 32, 32 );
 
 		glPopMatrix();
 
@@ -463,7 +392,6 @@ void display()
 		glPushMatrix();
 
 			glRotatef(planetInfo[JUPITER][REVOLUTION],0.0,0.0,1.0);
-			//glTranslatef( -16, 0, 0 ); // translation bidon
 			glTranslatef( planetInfo[JUPITER][DISTANCE], 0, 0);
 			glRotatef(planetInfo[JUPITER][ROTATION],0.0,0.0,1.0);
 			glPushMatrix();
@@ -511,17 +439,23 @@ void display()
 		glPopMatrix();
 
 		glPushMatrix();
-		   glTranslatef( 0, 0, 0 ); // translation bidon
-		   //glRotatef(rotations[0],0.0,0.0,1.0);
+		   glTranslatef( 0, 0, 0 );
 		   glScalef(planetInfo[SOLEIL][RAYON], planetInfo[SOLEIL][RAYON], planetInfo[SOLEIL][RAYON]);
 		   planet[0]->displayObject(shader_texture);
-		   //gluSphere( sphereSoleil, 2, 32, 32 );
 
 		glPopMatrix();
 
    glPopMatrix();
 
-	
+		//orbites
+	   gluDisk(orbite,planetInfo[MERCURE][DISTANCE]-TAILLE_ORBIT,planetInfo[MERCURE][DISTANCE],50,1); //Orbite MERCURE
+	   gluDisk(orbite,planetInfo[VENUS][DISTANCE]-TAILLE_ORBIT,planetInfo[VENUS][DISTANCE],50,1); //VENUS
+	   gluDisk(orbite,planetInfo[TERRE][DISTANCE]-TAILLE_ORBIT,planetInfo[TERRE][DISTANCE],50,1); //Orbite terre
+	   gluDisk(orbite,planetInfo[MARS][DISTANCE]-TAILLE_ORBIT,planetInfo[MARS][DISTANCE],50,1); //Mars
+	   gluDisk(orbite,planetInfo[JUPITER][DISTANCE]-TAILLE_ORBIT,planetInfo[JUPITER][DISTANCE],50,1); //Orbite Jupiter
+	   gluDisk(orbite,planetInfo[SATURNE][DISTANCE]-TAILLE_ORBIT,planetInfo[SATURNE][DISTANCE],50,1); //Orbite SATURNE
+	   gluDisk(orbite,planetInfo[URANUS][DISTANCE]-TAILLE_ORBIT,planetInfo[URANUS][DISTANCE],50,1); //URANUS
+	   gluDisk(orbite,planetInfo[NEPTUNE][DISTANCE]-TAILLE_ORBIT,planetInfo[NEPTUNE][DISTANCE],50,1); //Orbite NEPTUNE
 	
 	glFlush();
 }
@@ -544,39 +478,39 @@ void init()
   rotate2(camera_eye, rotation_axis, 90);
 
 
-	planetInfo[SOLEIL][RAYON] = 7;//34.7;
-	planetInfo[MERCURE][RAYON] = 0.38;
-	planetInfo[VENUS][RAYON] = 0.95;
-	planetInfo[TERRE][RAYON] = 1;
-	planetInfo[MARS][RAYON] = 0.5;
-	planetInfo[JUPITER][RAYON] = 5.5;//11.2;
-	planetInfo[SATURNE][RAYON] = 4.5;//9.4;
-	planetInfo[URANUS][RAYON] = 2;//4;
-	planetInfo[NEPTUNE][RAYON] = 2.0;//3.8;
+	planetInfo[SOLEIL][RAYON] = 12;//34.7;
+	planetInfo[MERCURE][RAYON] = 2.38;
+	planetInfo[VENUS][RAYON] = 2.95;
+	planetInfo[TERRE][RAYON] = 3;
+	planetInfo[MARS][RAYON] = 2.5;
+	planetInfo[JUPITER][RAYON] = 7.5;//11.2;
+	planetInfo[SATURNE][RAYON] = 6.5;//9.4;
+	planetInfo[URANUS][RAYON] = 4;//4;
+	planetInfo[NEPTUNE][RAYON] = 4.0;//3.8;
 	
 
 	planetInfo[LUNE][RAYON] = 0.2;
 
-	planetInfo[MERCURE][DISTANCE] = 10;
-	planetInfo[VENUS][DISTANCE] = 15;
-	planetInfo[TERRE][DISTANCE] = 17.5;//149;
-	planetInfo[MARS][DISTANCE] = 20;
-	planetInfo[JUPITER][DISTANCE] = 35;//778 ;
-	planetInfo[SATURNE][DISTANCE] = 60;//149;
-	planetInfo[URANUS][DISTANCE] = 70;
-	planetInfo[NEPTUNE][DISTANCE] = 90;//778 ;
+	planetInfo[MERCURE][DISTANCE] = 15;
+	planetInfo[VENUS][DISTANCE] = 20;
+	planetInfo[TERRE][DISTANCE] = 25;//149;
+	planetInfo[MARS][DISTANCE] = 30;
+	planetInfo[JUPITER][DISTANCE] = 45;//778 ;
+	planetInfo[SATURNE][DISTANCE] = 65;//149;
+	planetInfo[URANUS][DISTANCE] = 80;
+	planetInfo[NEPTUNE][DISTANCE] = 95;//778 ;
 
 	planetInfo[SOLEIL][REVOLUTION] = 0.0;
 	planetInfo[LUNE][REVOLUTION] = 0.2;
 
 	planetInfo[MERCURE][REVOLUTION] = 10;
-	planetInfo[VENUS][REVOLUTION] = 15;
+	planetInfo[VENUS][REVOLUTION] = 120;
 	planetInfo[TERRE][REVOLUTION] = 17.5;//149;
-	planetInfo[MARS][REVOLUTION] = 20;
-	planetInfo[JUPITER][REVOLUTION] = 35;//778 ;
+	planetInfo[MARS][REVOLUTION] = 90;
+	planetInfo[JUPITER][REVOLUTION] = 180;//778 ;
 	planetInfo[SATURNE][REVOLUTION] = 60;//149;
-	planetInfo[URANUS][REVOLUTION] = 70;
-	planetInfo[NEPTUNE][REVOLUTION] = 90;//778 ;
+	planetInfo[URANUS][REVOLUTION] = 30;
+	planetInfo[NEPTUNE][REVOLUTION] = 92;//778 ;
 
 	planetInfo[SOLEIL][ROTATION] = 0.000;
 	planetInfo[LUNE][ROTATION] = 20;
@@ -639,6 +573,10 @@ void init()
 	shader_light_color = glGetUniformLocation(shaderprogram, "mylight_color");
 	shader_light_direction = glGetUniformLocation(shaderprogram, "mylight_direction");
 	shader_light_type = glGetUniformLocation(shaderprogram, "mylight_type");
+		shader_light_position2 = glGetUniformLocation(shaderprogram, "mylight_position2");
+	shader_light_color2 = glGetUniformLocation(shaderprogram, "mylight_color2");
+	shader_light_direction2 = glGetUniformLocation(shaderprogram, "mylight_direction2");
+	shader_light_type2 = glGetUniformLocation(shaderprogram, "mylight_type2");
 	shader_silhouette = glGetUniformLocation(shaderprogram, "silhouette");
 	shader_texture = glGetUniformLocation(shaderprogram, "tex");
 
@@ -647,12 +585,31 @@ void init()
 	//t->readTexture("ppm/ppm/sunmap.ppm");
 
 	myTexture *soleil = new myTexture();
-	soleil->readTexture("ppm/ppm/sunmap.ppm");
+	soleil->readTexture("Textures/sunmap.ppm");
+	myTexture *lune = new myTexture();
+	lune->readTexture("Textures/moonmap1k.ppm");
+
+	myTexture *mercure = new myTexture();
+	mercure->readTexture("Textures/mercurymap.ppm");
+	myTexture *venus = new myTexture();
+	venus->readTexture("Textures/venusmap.ppm");
 	myTexture *terre = new myTexture();
-	terre->readTexture("ppm/ppm/earthmap1k.ppm");
+	terre->readTexture("Textures/earthmap1k.ppm");
+	myTexture *mars = new myTexture();
+	mars->readTexture("Textures/mars_1k_color.ppm");
+	myTexture *jupiter = new myTexture();
+	jupiter->readTexture("Textures/jupitermap.ppm");
+	myTexture *saturne = new myTexture();
+	saturne->readTexture("Textures/saturnmap.ppm");
+	myTexture *uranus = new myTexture();
+	uranus->readTexture("Textures/uranusmap.ppm");
+	myTexture *neptune = new myTexture();
+	neptune->readTexture("Textures/neptunemap.ppm");
+
+
 
 	myTexture *b = new myTexture();
-	b->readTexture("ppm/ppm/br_color.ppm");
+	b->readTexture("ppm/4241-diffuse.ppm");
 	
 	int i;
 	for(i=0; i<6; i++)
@@ -675,31 +632,16 @@ void init()
 		planet[i]->createObjectBuffers();
 	}
 	planet[SOLEIL]->mytex = soleil;
-	for(i=1; i<20; i++)
-	{
-		planet[i]->mytex = terre;
-	}
+	planet[MERCURE]->mytex = mercure;
+	planet[VENUS]->mytex = venus;
+	planet[TERRE]->mytex = terre;
+	planet[MARS]->mytex = mars;
+	planet[JUPITER]->mytex = jupiter;
+	planet[SATURNE]->mytex = saturne;
+	planet[URANUS]->mytex = uranus;
+	planet[NEPTUNE]->mytex = neptune;
+	planet[LUNE]->mytex = lune;
 
-	myTexture *t2 = new myTexture();
-	t2->readTexture("ppm/ppm/4351-diffuse.ppm");
-
-	/*sol = new myObject3D();
-	sol->readMesh("cube.obj");
-	sol->computeNormals();
-	sol->computeCylinderTexture();
-	sol->computeCylinderBump();
-	sol->createObjectBuffers();
-	sol->mytex = t2;
-	sol->mybump = b;*/
-
-	/*myobj2 = new myObject3D();
-	myobj2->readMesh("TriangularObjs/zune_120.objtri.obj");
-	myobj2->computeNormals();
-	myobj2->computeCylinderTexture();
-	myobj2->computeCylinderBump();
-	myobj2->createObjectBuffers();
-	myobj2->mytex = t;
-	myobj2->mybump = b;*/
 
 	plane = new myObject3D();
 	plane->readMesh("TriangularObjs/shuttle.objtri.obj");
