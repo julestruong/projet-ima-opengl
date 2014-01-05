@@ -47,7 +47,7 @@ public:
 	void computeCylinderTexture()
 	{
 
-		//textures.resize(2*n);
+		
 		textures = new GLfloat[2*n];
 		GLfloat x, y, z;
 		for (int i=0;i<n;i++)
@@ -60,6 +60,23 @@ public:
 			//this has problems at the seam, when 1->0 and so interpoltion results in the whole image squeezed between the two border vertices.
 			//if ( y>=0.0f )     textures[2*i+1] = atan2(  y,  x ) / (2*PI) ;
 			//else if ( y<0.0f )  textures[2*i+1] = (2*PI + atan2(  y,  x )) / (2*PI) ;
+		}
+	}
+
+	void computeSphereTexture(float radius)
+	{
+
+		//textures.resize(2*n);
+		textures = new GLfloat[2*n];
+		GLfloat x, y, z;
+		for (int i=0;i<n;i++)
+		{
+			x = vertices[3*i]; y = vertices[3*i+1]; z = vertices[3*i+2];
+			float dX = -x /sqrt( x*x + y*y + z*z );
+			float dY = -y /sqrt( x*x + y*y + z*z );
+			float dZ = -z /sqrt( x*x + y*y + z*z );
+			textures[2*i]=0.5+(atan2(dY,dX)/(2*PI));
+			textures[2*i+1]=0.5+((asin(dZ)/(PI)));
 		}
 	}
 

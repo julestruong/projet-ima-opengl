@@ -365,7 +365,7 @@ void display()
 
 		   glPushMatrix();
 				glRotatef(planetInfo[LUNE][REVOLUTION],0.0,0.0,1.0);
-				glTranslatef( 1.0, 0, 0 ); 
+				glTranslatef( planetInfo[LUNE][DISTANCE],0,0); 
 				glRotatef(planetInfo[LUNE][ROTATION],0.0,0.0,1.0);
 				glPushMatrix();
 					glScalef(planetInfo[LUNE][RAYON], planetInfo[LUNE][RAYON], planetInfo[LUNE][RAYON]);
@@ -489,7 +489,7 @@ void init()
 	planetInfo[NEPTUNE][RAYON] = 4.0;//3.8;
 	
 
-	planetInfo[LUNE][RAYON] = 0.2;
+	planetInfo[LUNE][RAYON] = 0.6;
 
 	planetInfo[MERCURE][DISTANCE] = 15;
 	planetInfo[VENUS][DISTANCE] = 20;
@@ -499,6 +499,7 @@ void init()
 	planetInfo[SATURNE][DISTANCE] = 65;//149;
 	planetInfo[URANUS][DISTANCE] = 80;
 	planetInfo[NEPTUNE][DISTANCE] = 95;//778 ;
+	planetInfo[LUNE][DISTANCE] = 3.5;
 
 	planetInfo[SOLEIL][REVOLUTION] = 0.0;
 	planetInfo[LUNE][REVOLUTION] = 0.2;
@@ -525,7 +526,7 @@ void init()
 	planetInfo[NEPTUNE][ROTATION] = 2;//778 ;
 
 	planetInfo[SOLEIL][VITESSEREVOLUTION] = 0.0;
-	planetInfo[LUNE][VITESSEREVOLUTION] = 0.0;
+	planetInfo[LUNE][VITESSEREVOLUTION] = 0.7;
 
 	planetInfo[MERCURE][VITESSEREVOLUTION] = 0.09;
 	planetInfo[VENUS][VITESSEREVOLUTION] = 0.08;
@@ -537,16 +538,16 @@ void init()
 	planetInfo[NEPTUNE][VITESSEREVOLUTION] = 0.01;//778 ;
 
 	planetInfo[SOLEIL][VITESSEROTATION] = 0.00;
-	planetInfo[LUNE][VITESSEROTATION] = 0.01;
+	planetInfo[LUNE][VITESSEROTATION] = 0.51;
 
-	planetInfo[MERCURE][VITESSEROTATION] = 0.05;
-	planetInfo[VENUS][VITESSEROTATION] = 0.05;
-	planetInfo[TERRE][VITESSEROTATION] = 0.07;//149;
-	planetInfo[MARS][VITESSEROTATION] = 0.03;
-	planetInfo[JUPITER][VITESSEROTATION] = 0.05;//778 ;
-	planetInfo[SATURNE][VITESSEROTATION] = 0.09;//149;
-	planetInfo[URANUS][VITESSEROTATION] = 0.01;
-	planetInfo[NEPTUNE][VITESSEROTATION] = 0.02;//778 ;
+	planetInfo[MERCURE][VITESSEROTATION] = 1.05;
+	planetInfo[VENUS][VITESSEROTATION] = 1.05;
+	planetInfo[TERRE][VITESSEROTATION] = 1.07;//149;
+	planetInfo[MARS][VITESSEROTATION] = 1.03;
+	planetInfo[JUPITER][VITESSEROTATION] = 1.05;//778 ;
+	planetInfo[SATURNE][VITESSEROTATION] = 1.09;//149;
+	planetInfo[URANUS][VITESSEROTATION] = 1.01;
+	planetInfo[NEPTUNE][VITESSEROTATION] = 1.02;//778 ;
 
 
 
@@ -582,29 +583,29 @@ void init()
 
 	myTexture *t = new myTexture();
 	t->readTexture("ppm/ppm/space.ppm");
-	//t->readTexture("ppm/ppm/sunmap.ppm");
+	//t->readTexture("Textures/earthmap1k(1).ppm");
 
 	myTexture *soleil = new myTexture();
-	soleil->readTexture("Textures/sunmap.ppm");
+	soleil->readTexture("Textures/sunmap(1).ppm");
 	myTexture *lune = new myTexture();
 	lune->readTexture("Textures/moonmap1k.ppm");
 
 	myTexture *mercure = new myTexture();
-	mercure->readTexture("Textures/mercurymap.ppm");
+	mercure->readTexture("Textures/mercurymap(1).ppm");
 	myTexture *venus = new myTexture();
-	venus->readTexture("Textures/venusmap.ppm");
+	venus->readTexture("Textures/venusmap(1).ppm");
 	myTexture *terre = new myTexture();
-	terre->readTexture("Textures/earthmap1k.ppm");
+	terre->readTexture("Textures/earthmap1k(1).ppm");
 	myTexture *mars = new myTexture();
-	mars->readTexture("Textures/mars_1k_color.ppm");
+	mars->readTexture("Textures/mars_1k_color(1).ppm");
 	myTexture *jupiter = new myTexture();
-	jupiter->readTexture("Textures/jupitermap.ppm");
+	jupiter->readTexture("Textures/jupitermap(1).ppm");
 	myTexture *saturne = new myTexture();
-	saturne->readTexture("Textures/saturnmap.ppm");
+	saturne->readTexture("Textures/saturnmap(1).ppm");
 	myTexture *uranus = new myTexture();
-	uranus->readTexture("Textures/uranusmap.ppm");
+	uranus->readTexture("Textures/uranusmap(1).ppm");
 	myTexture *neptune = new myTexture();
-	neptune->readTexture("Textures/neptunemap.ppm");
+	neptune->readTexture("Textures/neptunemap(1).ppm");
 
 
 
@@ -629,6 +630,8 @@ void init()
 		planet[i]->readMesh("TriangularObjs/sphere.obj");
 		planet[i]->computeNormals();
 		planet[i]->computeCylinderTexture();
+		planet[i]->computeSphereTexture(planetInfo[i][RAYON]);
+		//planet[i]->computeSphereTexture();
 		planet[i]->createObjectBuffers();
 	}
 	planet[SOLEIL]->mytex = soleil;
